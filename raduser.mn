@@ -1,0 +1,32 @@
+.\" Manpage for raduser.
+.\" Contact user@domain.com to correct errors or typos.
+.TH man 8 "20 April 2016" "1.0" "raduser man page"
+.SH NAME
+raduser \- manage freeRADIUS local users file
+.SH SYNOPSIS
+raduser [OPERATION] <username> <password>
+.SH DESCRIPTION
+raduser is high level shell utility for adding users to the freeRADIUS local users file.
+.SH OPTIONS
+add - add a new user, accepts username and password
+del - delete a currently existing user
+list - list current users file
+.SH EXAMPLES
+
+Add new user: 
+
+raduser add username password
+
+Delete user: 
+
+raduser del username
+
+List users: 
+
+raduser list
+.SH SEE ALSO
+radiusd(8)
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+efluffy (user@domain.com)

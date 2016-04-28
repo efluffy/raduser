@@ -1,0 +1,57 @@
+#!/bin/perl
+
+use strict;
+use warnings;
+
+no warnings 'uninitialized';
+
+my $userfile = "/etc/raddb/users";
+
+open my $fhr, "<", $userfile || die "Couldn't open users file to read!";
+my @users = <$fhr>;
+close($fhr);
+
+if($ARGV[0] eq "add") {
+	foreach (@users) {
+		if($_ =~ m/^$ARGV[1] Cleartext-Password :=.*/) {
+			print "User exists!\n";
+			exit(0);
+		}
+	}
+	my $newuser = $ARGV[1] . " Cleartext-Password := \"" . $ARGV[2] . "\"\n";
+	push(@users, $newuser);
+}
+
+elsif($ARGV[0] eq "del") {
+	my $i = 0;
+	my $found = 0;
+	foreach (@users) {
+		if($_ =~ m/^$ARGV[1] Cleartext-Password :=.*/) {
+			splice(@users, $i, 1);
+			$found = 1;
+		}
+		$i++;
+	}
+	if($found == 0) {
+		print "User not found.\n";
+		exit(0);
+	}
+}
+
+elsif($ARGV[0] eq "list") {
+	foreach (@users) {
+		print $_ ;
+	}
+	exit(0);
+}
+else {
+	print "\nUsage:\nAdd new user: raduser add username password\nDelete user: raduser del username\nList users: raduser list\n\n";
+	exit(0);
+}
+open my $fhw, ">", $userfile || die "Couldn't open users file to write!";
+foreach my $user (@users) {
+	print $fhw $user;
+}
+close($fhw);
+print "Operation completed, restarting radiusd...\n";
+print `/sbin/service radiusd restart`;
